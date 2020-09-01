@@ -84,4 +84,8 @@ img6.show()
 img6_new = histo_equilization(img6)
 img6_new.show()
 
+img6 = Image.open('../data/test.png')
+img6.show()
+img6_new = histo_equilization(img6)
+img6_new.show()
 
