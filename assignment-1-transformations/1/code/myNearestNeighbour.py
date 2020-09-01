@@ -28,6 +28,6 @@ def myNearestNeighbour(image):
     plt.imshow(res, cmap='gray', vmin=0, vmax=255)
     plt.colorbar()
     plt.title("Nearest Neighbour Interpolation - Barbara\n")
-    plt.show()    
+    plt.show()
     
     return res

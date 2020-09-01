@@ -1,5 +1,5 @@
 import numpy as np
-from PIL import Image
+import matplotlib.pyplot as plt
 
 
 '''
@@ -12,9 +12,6 @@ the given function shows both the original and shrinked images so that we can cl
 '''
 
 def myShrinkImageByFactorD(image, d): #image and shrinking factor d are inputs
-
-	#converting the image into a numpy array
-	image = np.asarray(image)
 
 	#initializing the resultant image by a numpy array of all zeros
 	result_img = np.zeros((image.shape[0] // d, image.shape[1] // d))
@@ -31,22 +28,12 @@ def myShrinkImageByFactorD(image, d): #image and shrinking factor d are inputs
 					result_img[(i+1)//d - 1][(j+1)//d - 1] = image[i][j]
 
 	#converting the numpy array into a image
-	result_img = Image.fromarray(result_img)
+	plt.imshow(result_img, cmap='gray', vmin=0, vmax=255)
+	plt.colorbar()
+	plt.title(f"Shrinked by a factor of {d}\n")
+	plt.show() 
+
 	#returning resultant image
 	return result_img
-
-
-#importing the image
-PATH = '../data/circles_concentric.png'
-image = Image.open(PATH)
-image.show()
-
-#shrinking by a factor of 2
-shrinked_image = myShrinkImageByFactorD(image, 2)
-shrinked_image.show()
-
-#shrinking by a factor of 3
-shrinked_image = myShrinkImageByFactorD(image, 3)
-shrinked_image.show()
 
 
