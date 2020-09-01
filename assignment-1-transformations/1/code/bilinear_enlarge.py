@@ -54,7 +54,7 @@ def bilin_interpol_image(image):
 	return res_img
 
 
-image = Image.open('../data/barbaraSmall.png')
-image.show()
-big_img = bilin_interpol_image(image)
-big_img.show()
+# image = Image.open('../data/barbaraSmall.png')
+# image.show()
+# big_img = bilin_interpol_image(image)
+# big_img.show()
