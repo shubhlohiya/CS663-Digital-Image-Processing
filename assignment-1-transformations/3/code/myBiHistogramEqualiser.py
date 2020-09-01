@@ -49,7 +49,7 @@ def histo_equilization(image):
 	image = np.asarray(image)
 	#for grayscale image
 	if len(image.shape) == 2:
-		return Histo_equi_single_channel(image)
+		Histo_equi_single_channel(image).show()
 	else:
 		
 		#for color image, doing the equilization for each channel
@@ -57,7 +57,7 @@ def histo_equilization(image):
 		for i in range(image.shape[2]):
 			result_img[:,:,i] = Histo_equi_single_channel(image[:,:,i])
 		result_img = Image.fromarray(result_img.astype('uint8'), 'RGB')
-		return result_img
+		result_img.show()
 
 
 
@@ -127,28 +127,24 @@ def bihisto_equilization(image):
 
 
 
-def bihistogram(image):
+def biHistogram(image):
 	#converting both the images in numpt arrays
 	image = np.asarray(image)
 	# for grayscale image
 	if len(image.shape) == 2:
-		return bihisto_equilization(image)
+		bihisto_equilization(image).show()
 	else:
 		#for color image, doing the equilization for each channel
 		result_img = np.zeros(image.shape)
 		for i in range(image.shape[2]):
 			result_img[:,:,i] = bihisto_equilization(image[:,:,i])
 		result_img = Image.fromarray(result_img.astype('uint8'), 'RGB')
-		return result_img
+		result_img.show()
 
 
 
-img1 = Image.open('../data/pir.jpg')
-img1.show()
-img1_new = histo_equilization(img1)
-img1_new.show()
 
 
-img2 = Image.open('../data/pir.jpg')
-img2_new = bihistogram(img2)
-img2_new.show()
+
+
+
