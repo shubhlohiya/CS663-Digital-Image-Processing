@@ -1,4 +1,3 @@
-import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -25,14 +24,10 @@ def myNearestNeighbour(image):
             y = min(round(i*yratio), h1-1)
             x = min(round(j*xratio), w1-1)
             res[i,j] = image[y, x]
-            
-    return res
-
-
-image = cv2.imread("../data/barbaraSmall.png", 0)
-
-res = myNearestNeighbour(image).astype(np.uint8)
-plt.imshow(res, cmap='gray', vmin=0, vmax=255)
-plt.colorbar()
-plt.title("Nearest Neighbour Interpolation")
-plt.show()
+    
+    plt.imshow(res, cmap='gray', vmin=0, vmax=255)
+    plt.colorbar()
+    plt.title("Nearest Neighbour Interpolation - Barbara\n")
+    plt.show()    
+    
+    pass
