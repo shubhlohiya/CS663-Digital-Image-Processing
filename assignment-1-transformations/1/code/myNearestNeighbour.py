@@ -30,4 +30,4 @@ def myNearestNeighbour(image):
     plt.title("Nearest Neighbour Interpolation - Barbara\n")
     plt.show()    
     
-    pass
+    return res
