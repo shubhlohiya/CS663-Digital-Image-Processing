@@ -29,7 +29,7 @@ def Histo_equi_single_channel(image): #histogram equilization for a single chann
 		for j in range(i+1):
 			b[i] += freq[j] * prob_one_pix
 		#rounding off to nearest integer
-		b[i] = nearest_int(b[i] * 255)
+		#b[i] = nearest_int(b[i] * 255)
 
 
 	#initializing resultantat image with zeros with shape of original image

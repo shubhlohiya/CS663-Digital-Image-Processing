@@ -34,12 +34,11 @@ def bilin_interpol_image(image):
 
 	#initailizing the resultant image with zeros and given dimensions
 	res_img = np.zeros((3*M-2, 2*N-1))
-	print(res_img.shape)
+	#print(res_img.shape)
 
 	#updating the pixel intensities accoding to given conditions
 	#in rows, starting from element with index 0, every third element will be updated
 	#in columns, startig from element with index 0, altenate elements will be updated
-
 
 	for i in range(image.shape[0]):
 		for j in range(image.shape[1]):
@@ -59,7 +58,3 @@ image = Image.open('../data/barbaraSmall.png')
 image.show()
 big_img = bilin_interpol_image(image)
 big_img.show()
-
-
-
-
