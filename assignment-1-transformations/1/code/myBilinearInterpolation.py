@@ -1,5 +1,5 @@
 import numpy as np
-from PIL import Image
+import matplotlib.pyplot as plt
 
 def bilin_interpol_intensity(image ,x1, y1, x2, y2, x, y): #function takes four corners of a rectangle and an image with a point in which we are going to do the interpolation 
                                           #this function returns intersity after interpolation at (x,y)
@@ -25,9 +25,8 @@ def bilin_interpol(image, x1, y1, x2, y2):
 			image[i][j] = bilin_interpol_intensity(image, x1, y1, x2, y2, i, j)
 	return image
 
-def bilin_interpol_image(image):
-	#converting both the images in numpt arrays
-	image = np.asarray(image)
+def myBilinearInterpolation(image):
+	
 	#M is no. of rows and N is no. of columns in given image
 	M = image.shape[0]
 	N = image.shape[1]
@@ -50,11 +49,9 @@ def bilin_interpol_image(image):
 			res_img = bilin_interpol(res_img, 3*i, 2*j, 3*i+3, 2*j+2)
 
 	#converting array to the image
-	res_img = Image.fromarray(res_img)
+	plt.imshow(res_img, cmap='gray', vmin=0, vmax=255)
+	plt.colorbar()
+	plt.title("Bilinear Interpolation - Barbara\n")
+	plt.show()
+
 	return res_img
-
-
-# image = Image.open('../data/barbaraSmall.png')
-# image.show()
-# big_img = bilin_interpol_image(image)
-# big_img.show()

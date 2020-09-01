@@ -1,5 +1,5 @@
 import numpy as np
-from PIL import Image
+import matplotlib.pyplot as plt
 
 def der_mat(image):
 	der_mat = np.zeros((image.shape[0], image.shape[1], 3))
@@ -217,9 +217,8 @@ def bicubic_for_a_rectangle(mat, image, x1, y1, x2, y2):
 			image[i][j] = cubic_output(parameters, i, j)
 	return image
 
-def bicubic(image):
-		#converting both the images in numpt arrays
-	image = np.asarray(image)
+def myBicubicInterpolation(image):
+	
 	#M is no. of rows and N is no. of columns in given image
 	M = image.shape[0]
 	N = image.shape[1]
@@ -240,12 +239,9 @@ def bicubic(image):
 			res_img = bicubic_for_a_rectangle(mat,res_img, 3*i, 2*j, 3*i+3, 2*j+2)
 
 	#converting array to the image
-	res_img = Image.fromarray(res_img)
+	plt.imshow(res_img, cmap='gray', vmin=0, vmax=255)
+	plt.colorbar()
+	plt.title("Bicubic Interpolation - Barbara\n")
+	plt.show()
+	
 	return res_img
-
-
-image = Image.open('../data/barbaraSmall.png')
-
-
-img = bicubic(image)
-img.show()
