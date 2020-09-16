@@ -171,3 +171,9 @@ def myCLAHE(image, name):
 		im = ax1b.imshow(res, cmap='gray', vmin=0, vmax=255)
 		ax1b.title.set_text(f"{name} - window size: 50, \nclip threshold: 0.005 (halved)")
 		fig1b.colorbar(im, ax=ax1b)
+
+
+image = cv2.imread(f"../data/barbara.png", 0)
+res = clahe(image, 11, 0.05)
+cv2.imshow("image", res.astype(np.uint8))
+cv2.waitKey()	
