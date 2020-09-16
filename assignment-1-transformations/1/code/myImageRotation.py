@@ -1,8 +1,8 @@
 import numpy as np
 import math
+import cv2
 from PIL import Image
-from bilinear_enlarge import *
-
+import matplotlib.pyplot as plt
 
 def bilin_interpol_intensity(image , x, y): #function takes four corners of a rectangle and an image with a point in which we are going to do the interpolation 
   
@@ -38,11 +38,11 @@ def bilin_interpol_intensity(image , x, y): #function takes four corners of a re
 
 
 def rotate_image(image,angle):
-	#converting both the images in numpt arrays
-	image = np.asarray(image)
-	#M is no. of rows and N is no. of columns in given image
+
 	M = image.shape[0]
 	N = image.shape[1]
+	#M is no. of rows and N is no. of columns in given image
+	
 
 	res_img = np.zeros((M,N))
 
@@ -55,10 +55,9 @@ def rotate_image(image,angle):
 	# 	res_img[i][N-1]=image[i][M-1]
 
 
+	# finding the center
 	x0 = (N-1)//2
 	y0 = (M-1)//2
-
-
 
 	for i in range(N):
 		for j in range(M):
@@ -67,8 +66,6 @@ def rotate_image(image,angle):
 			y = y0 - j
 
 			r = np.sqrt(pow(x,2) + pow (y,2))
-
-			print(r)
 
 			if x == 0 :
 
@@ -84,8 +81,27 @@ def rotate_image(image,angle):
 						theta = 0.5 * math.pi
 
 			else:
-				theta = np.arctan(y/x)
+
+				if y==0:
+					if x<0:
+						theta= math.pi
+					else:
+						theta= 0
+
+				else:
+					if x>0 and y>0:
+						theta = np.arctan(y/x)
+
+					if x<0 and y>0:
+						theta = 0.5*math.pi + np.arctan(x/(-1*y))
+
+					if x>0 and y<0:
+						theta = 1.5*math.pi + np.arctan(x/(-1*y))
+
+					if x<0 and y<0:
+						theta = math.pi + np.arctan(y/x)
 	        
+
 			xr = r*np.cos(theta + ((math.pi/180)*angle))
 			yr = r*np.sin(theta + ((math.pi/180)*angle))
 
@@ -121,12 +137,15 @@ def rotate_image(image,angle):
 
 
 	# print(res_img)
-	res_img = Image.fromarray(res_img)
-	return res_img
+	plt.imshow(image, cmap='gray', vmin=0, vmax=255)
+	plt.colorbar()
+	plt.title("Original Image\n")
+	plt.show()
+
+	plt.imshow(res_img, cmap='gray', vmin=0, vmax=255)
+	plt.colorbar()
+	plt.title("Image Rotation 30 degrees\n")
+	plt.show()
 
 
 
-image = Image.open('../data/barbaraSmall.png')
-image.show()
-big_img = rotate_image(image,30)
-big_img.show()
