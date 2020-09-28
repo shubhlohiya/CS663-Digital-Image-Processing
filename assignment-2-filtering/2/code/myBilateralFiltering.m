@@ -1,13 +1,14 @@
-function output_img = myBilateralFiltering(image, sig_s, sig_i, window)
+function output_img = myBilateralFiltering(image, sig_s, sig_i, window, show)
 
     %converting the image in double 
     image = double(image);
     %noramlizing the image pixels as we are using color bar from 0 to 1
     image= image / max(max(image));
-    figure();
-    subplot(1,3,1), imshow(mat2gray(image)), title('original image');
-    colorbar();
-    
+    if show == 1
+        figure();
+        subplot(1,3,1), imshow(mat2gray(image)), title('original image');
+        colorbar();
+    end
     %adding iid noise to the image
     %calculating the standard deviation as 5% of range of image intensities
     std_dev = 0.05 * (max(max(image)) - min(min(image)));
@@ -16,9 +17,10 @@ function output_img = myBilateralFiltering(image, sig_s, sig_i, window)
     iid_noise = std_dev .* randn(size(image));
     %adding the noise to given image
     corrupt_image = image + iid_noise;
-    subplot(1,3,2), imshow(mat2gray(corrupt_image)), title('corrupted image');
-    colorbar();
-    
+    if show == 1
+        subplot(1,3,2), imshow(mat2gray(corrupt_image)), title('corrupted image');
+        colorbar();
+    end
     %initializing the output image with all zeros
     output_img = double(zeros(size(image)));
     
@@ -63,9 +65,10 @@ function output_img = myBilateralFiltering(image, sig_s, sig_i, window)
             
         end
     end
-    subplot(1,3,3), imshow(mat2gray(output_img)), title('output image');
-    colorbar();
-    
+    if show == 1
+        subplot(1,3,3), imshow(mat2gray(output_img)), title('output image');
+        colorbar();
+    end
     %Root Mean Squared Distance(RMSD)
     %number of elements/pixels in the image
     num_pix = size(image, 1) * size(image, 2);
@@ -77,7 +80,8 @@ function output_img = myBilateralFiltering(image, sig_s, sig_i, window)
     disp(rmsd);
     
     %showing the spatial gaussian
-    figure()
-    imshow(mat2gray(W_spc));
-
+    if show == 1
+        figure()
+        imshow(mat2gray(W_spc));
+    end
 end
