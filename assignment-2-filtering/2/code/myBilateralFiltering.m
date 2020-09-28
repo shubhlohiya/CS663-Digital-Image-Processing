@@ -1,76 +1,83 @@
 function output_img = myBilateralFiltering(image, sig_s, sig_i, window)
-%setting the std deviation of idd noise to 5% of the range of intensities
-%of the image
-image = double(image);
-figure()
-subplot(1,3,1), imshow(mat2gray(image)), title('original image');
-colorbar();
-range_int = max(max(image)) - min(min(image));
-st_dev = 0.05 * range_int;
 
-%iid noise matrix of the size of the image
-iid_noise = st_dev.*randn(size(image));
-
-%corrupting the given image with idd noise
-corrupt_img = image + iid_noise;
-subplot(1,3,2), imshow(mat2gray(corrupt_img)), title('corrputed image');
-colorbar();
-
-%the spatial weights' matrix will be same irrespective of location in the image
-%creating a matrix with all possible combinations of x and y
-[x,y] = meshgrid(-floor(window/2):floor(window/2), -floor(window/2):floor(window/2));
-%calculating the spatial weights
-sp_w_G = exp(-(x.^2 + y.^2) / (2 * sig_s^2));
-%initializing output image
-output_img = double(zeros(size(image)));
-[rows, columns] = size(image);
-
-for row = 1:rows
-    %to account for edge pixels
-    row_min = max(row - floor(window/2), 1);
-    row_max = min(rows, row + floor(window/2));
+    %converting the image in double 
+    image = double(image);
+    %noramlizing the image pixels as we are using color bar from 0 to 1
+    image= image / max(max(image));
+    figure();
+    subplot(1,3,1), imshow(mat2gray(image)), title('original image');
+    colorbar();
     
-    for col = 1:columns
+    %adding iid noise to the image
+    %calculating the standard deviation as 5% of range of image intensities
+    std_dev = 0.05 * (max(max(image)) - min(min(image)));
+    %iid noise from normal distribution with mean zero and std. deviation
+    %as calculated above
+    iid_noise = std_dev .* randn(size(image));
+    %adding the noise to given image
+    corrupt_image = image + iid_noise;
+    subplot(1,3,2), imshow(mat2gray(corrupt_image)), title('corrupted image');
+    colorbar();
+    
+    %initializing the output image with all zeros
+    output_img = double(zeros(size(image)));
+    
+    %the weights from the spacial gaussian matrix will be same irrespective
+    %of the position of the pixel under consideration
+    %[x,y] will be all possible combinations of indices in the given window
+    %size, floor acts like Greatest integer function
+    [x,y] = meshgrid(-floor(window/2): floor(window/2), -floor(window/2): floor(window/2));
+    %calculating the spacial weights' matrix fir the given window size and standard deviation 
+    W_spc = exp(-(x.^2 + y.^2)/(2 * sig_s^2));
+    
+    [rows, columns] = size(image);
+   
+    for row = 1:rows
         %to account for edge pixels
-        col_min = max(col - floor(window/2), 1);
-        col_max = min(columns, col + floor(window/2));
+        row_min = max(row - floor(window/2), 1);    
+        row_max = min(row + floor(window/2), rows);
         
-        %intensity of current pixel
-        int_curr = corrupt_img(row, col);
-        
-        %calculating the weights' matrix for the intensities around the
-        %pixel under consideration
-        int_w_G = exp(-(corrupt_img(row_min:row_max, col_min:col_max) - int_curr).^2 / (2 * sig_i^2));
-       
-        %subset of spacial weights' matrix corresponding to size of
-        %intensity weights' matrix
-        SP_W_G = sp_w_G((row_min:row_max)-row+floor(window/2)+1, (col_min:col_max)-col+floor(window/2)+1);
-        %calculating the net weight corresponding to given window/pixel
-        net_weight = int_w_G .* SP_W_G;
-        %normalizing constant
-        Wp = sum(sum(net_weight));
-        
-        %updated intensity of the pixel
-        output_img(row, col) = sum(sum(net_weight .* corrupt_img(row_min:row_max, col_min:col_max))) / Wp; 
-        
+        for col = 1:columns
+            %to account for edge pixels
+            col_min = max(col - floor(window/2), 1);
+            col_max = min(col + floor(window/2), columns);
+            
+            %calculating the intensity weights' matrix corresponding the
+            %pixel under consideration and, window size and given standard
+            %deviation
+            W_int = exp(-(corrupt_image(row_min:row_max, col_min:col_max) - corrupt_image(row,col)).^2 / (2 * sig_i^2));
+            
+            %taking the subset of the spacial weights matrix same size as
+            %of intensity weight matrix
+            W_spc_sub = W_spc((row_min:row_max)-row+floor(window/2)+1, (col_min:col_max)-col+floor(window/2)+1);
+            
+            %calculating the overall weights .i.e. product of the intensity and
+            %spacial weights
+            W_overall = W_spc_sub .* W_int;
+            
+            %the normalizing constant
+            Wp = sum(sum(W_overall));
+            
+            %updating the intensity in the final image
+            output_img(row,col) = sum(sum(W_overall .* corrupt_image(row_min:row_max, col_min:col_max))) / Wp;
+            
+        end
     end
-end
-subplot(1,3,3), imshow(mat2gray(output_img)), title('filtered image');
-colorbar();
-
-    %calculating RMSD
-    diff = image - output_img;
-    sum_sq = sum(sum(diff.^2));
-    %number of pixels in images
-    num_ele = size(image, 1) * size(image, 2);
+    subplot(1,3,3), imshow(mat2gray(output_img)), title('output image');
+    colorbar();
     
-    rmsd = sqrt(sum_sq ./ num_ele);
-    disp(rmsd)
+    %Root Mean Squared Distance(RMSD)
+    %number of elements/pixels in the image
+    num_pix = size(image, 1) * size(image, 2);
+    %sum of squares of differences between the pixel intensities of the
+    %given two images
+    SoS = sum(sum((image - output_img) .^ 2));
+    %value to be returned
+    rmsd = sqrt(SoS/num_pix);
+    disp(rmsd);
     
-    %Spatial Gaussian
+    %showing the spatial gaussian
     figure()
-    imshow(sp_w_G)
-    
-    
+    imshow(mat2gray(W_spc));
+
 end
-        
