@@ -6,8 +6,9 @@ function output_img = myBilateralFiltering(image, sig_s, sig_i, window, show)
     image= image / max(max(image));
     if show == 1
         figure();
+        set(gcf, 'Position', get(0, 'Screensize'));
         subplot(1,3,1), imshow(mat2gray(image)), title('original image');
-        colorbar();
+%         colorbar();
     end
     %adding iid noise to the image
     %calculating the standard deviation as 5% of range of image intensities
@@ -19,7 +20,7 @@ function output_img = myBilateralFiltering(image, sig_s, sig_i, window, show)
     corrupt_image = image + iid_noise;
     if show == 1
         subplot(1,3,2), imshow(mat2gray(corrupt_image)), title('corrupted image');
-        colorbar();
+%         colorbar();
     end
     %initializing the output image with all zeros
     output_img = double(zeros(size(image)));
@@ -67,7 +68,7 @@ function output_img = myBilateralFiltering(image, sig_s, sig_i, window, show)
     end
     if show == 1
         subplot(1,3,3), imshow(mat2gray(output_img)), title('output image');
-        colorbar();
+%         colorbar();
     end
     %Root Mean Squared Distance(RMSD)
     %number of elements/pixels in the image
@@ -81,7 +82,7 @@ function output_img = myBilateralFiltering(image, sig_s, sig_i, window, show)
     
     %showing the spatial gaussian
     if show == 1
-        figure()
+        figure();
         imshow(mat2gray(W_spc));
     end
 end
