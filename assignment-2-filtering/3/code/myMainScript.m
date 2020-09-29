@@ -8,7 +8,7 @@ tic;
     patch_size = 9; 
     [x,y] = meshgrid(-floor(patch_size/2):floor(patch_size/2),-floor(patch_size/2):floor(patch_size/2));
     gaussian = exp(-(x.^2 + y.^2)/(2*sigma^2));
-%% Barbara; Optimal sigma found= 0.15
+% Barbara; Optimal sigma found= 0.15
  load("../data/barbara.mat");
  image = imageOrig;
      image = double(image);
@@ -36,16 +36,16 @@ myPatchBasedFiltering(grassimage, 0.15, 1, gaussian); % Optimal Sigma i.e. sigma
 myPatchBasedFiltering(grassimage, 0.9*0.15, 0, gaussian);
 myPatchBasedFiltering(grassimage, 1.1*0.15, 0, gaussian);
  
-%% HoneyComb Optimal sigma found =0.18
+%% HoneyComb Optimal sigma found =0.162
 honeyimage = imread("../data/honeyCombReal.png");
 %  %converting the image in double 
      honeyimage = double(honeyimage);
 %     %noramlizing the image pixels as we are using color bar from 0 to 1
      honeyimage= honeyimage / max(max(honeyimage));
 
-myPatchBasedFiltering(honeyimage, 0.18, 1, gaussian); % Optimal Sigma i.e. sigma*=0.18
-myPatchBasedFiltering(honeyimage, 0.9*0.18, 0, gaussian);
-myPatchBasedFiltering(honeyimage, 1.1*0.18, 0, gaussian);
+myPatchBasedFiltering(honeyimage, 0.162, 1, gaussian); % Optimal Sigma i.e. sigma*=0.18
+myPatchBasedFiltering(honeyimage, 0.9*0.162, 0, gaussian);
+myPatchBasedFiltering(honeyimage, 1.1*0.162, 0, gaussian);
 
 %% Gaussian mask
 figure();
