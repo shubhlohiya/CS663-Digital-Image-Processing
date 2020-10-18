@@ -10,7 +10,7 @@ function output_img = mySpatiallyVaryingKernel(image, image_no, alpha)
 %         result = myMeanShiftSegmentation(image, hc, hs, n, 1, 1);
 %         %
 %         %removing anomalies due to resizing of the image in mean shift
-%         result = result(1:h,1:w,:);\
+%         result = result(1:h,1:w,:);
         
         % reading segmented image formed using above code to make it fast
         result = imread("../images/flower/segmented_image.png");        
