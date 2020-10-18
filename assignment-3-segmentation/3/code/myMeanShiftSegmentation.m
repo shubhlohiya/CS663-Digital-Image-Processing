@@ -37,7 +37,7 @@ function [segmented_img] = myMeanShiftSegmentation(img, hc, hs, n, rescale, lr)
         if i==floor(n/2)
             step_size = step_size/2;
         end
-        waitbar(double(i)/double(n));
+        %waitbar(double(i)/double(n));
     end
     segmented_img = uint8(imresize(reshape(full_dim_img(:, 1:d), h, w, d), 2)*rescale);    
 end
@@ -54,3 +54,9 @@ function grad = get_grad(pixel, neighbours, hc, hs)
     grad = zeros(size(pixel));
     grad(1:end-2) = sum(neighbours(:,1:end-2).*repmat(weights, 1, length(pixel)-2))/sum(weights)-pixel(1:end-2);
 end
+    
+    
+        
+        
+        
+        
