@@ -96,6 +96,25 @@ function output_img = mySpatiallyVaryingKernel(image, image_no, alpha)
         %output_img = output_img + foreground;
         %imshow(mat2gray(output_img));
     end
+    if image_no == 2
+        % hc = 0.12;
+        % hs = 30;
+        % n = 15;
+        % 
+        % pic = imread('../data/bird.jpg');
+        % result = myMeanShiftSegmentation2(pic, hc, hs, n);
+        % [labels,centres] = imsegkmeans(result,2);
+        % clustered = label2rgb(labels,im2double(centres));
+        % initial_mask = rgb2gray(clustered)>100;
+        % initial_mask(1:180, 550:end) = 0;
+        % initial_mask(180:360,end-100:end) =0;
+        % initial_mask(end-150:end-50,end-315:end-275) = 0;
+        % initial_mask(210:450,110:285) = 0;
+        % initial_mask(430:500,340:450) = 0;
+        % initial_mask(310:350,280:382) = 0;
+        % initial_mask(1:25,300:420) = 0;
+        % final_mask = initial_mask;
+    end
 end
     
     

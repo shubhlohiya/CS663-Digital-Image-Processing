@@ -25,8 +25,8 @@ toc;
 
 %% Flower
 tic;
-hc = 0.08;
-hs = 25;
+hc = 0.2;
+hs = 20;
 n = 15;
 
 pic = imread('../data/flower.jpg');
