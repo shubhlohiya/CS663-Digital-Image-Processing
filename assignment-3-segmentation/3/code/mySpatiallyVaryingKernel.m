@@ -66,14 +66,10 @@ function output_img = mySpatiallyVaryingKernel(image, image_no, alpha)
         background = image .* neg_mask;
         %imshow(mat2gray(background));
         foreground = image .* mask;
-        
-        %imshow(mat2gray(background));
-    end
+        end
         
         radius_mat = double(ones(size(mask))) * alpha;
         visited=zeros(size(mask));
-        
-        
         for radius = 1:alpha
             kernel = fspecial('disk',alpha+1-radius);            
             M = imfilter(mask, kernel); %matrix with convolution of mask and kernel
@@ -86,7 +82,8 @@ function output_img = mySpatiallyVaryingKernel(image, image_no, alpha)
                 end
             end
         end
-         
+        blurr_img = background; 
+        for i = 1:10
         for radius = 1:alpha
             kernel = fspecial('disk',radius);
             M = imfilter(image, kernel);
@@ -97,8 +94,9 @@ function output_img = mySpatiallyVaryingKernel(image, image_no, alpha)
                     end
                 end
             end
-               waitbar(double(radius)/double(alpha));     
-            end
+        end
+           waitbar(double(i)/double(5));     
+        end
        
        %imshow(mat2gray(blurr_img));
        output_img = blurr_img + foreground;
