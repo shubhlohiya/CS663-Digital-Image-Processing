@@ -5,7 +5,8 @@ tic;
 %% Your code here
 
 pic = double(imread('../data/flower.jpg'));
-output_img = mySpatiallyVaryingKernel(pic,1,20);
+pic_seg = double(imread('../data/clustered_flower.png'));
+output_img = mySpatiallyVaryingKernel(pic, pic_seg,1,20);
 
 
 toc;
