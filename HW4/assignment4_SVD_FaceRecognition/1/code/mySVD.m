@@ -1,4 +1,4 @@
-function mySVD(A)
+function [U, S, V] = mySVD(A)
 
     AAT = A * transpose(A);
     ATA = transpose(A) * A;
@@ -9,8 +9,8 @@ function mySVD(A)
     
     %sorting the eigenvalues and eigenvectord according to the convention
     %ph is just a place holder
-    [ph, U_sort] = sort(diag(U_eig), 'descend');
-    [ph, V_sort] = sort(diag(V_eig), 'descend');
+    [~, U_sort] = sort(diag(U_eig), 'descend');
+    [~, V_sort] = sort(diag(V_eig), 'descend');
     
     U = U(:, U_sort);
     V = V(:, V_sort);
@@ -27,12 +27,6 @@ function mySVD(A)
     end
     
     %S is always non negative
-    S = abs(S);  
-    %prindting the values for verification
-    disp(A);
-    disp(U*S*transpose(V))
-    %disp(A-U*S*transpose(V));
-    
-
+    S = abs(S);
 end
 
