@@ -1,0 +1,330 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Strategy for people not in training set</title><meta name="generator" content="MATLAB 9.8"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-11-06"><meta name="DC.source" content="myMainScript.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Strategy for people not in training set</h1><!--introduction--><pre>For people not in the training set, we expect the minimum of the errors of their image coefficients with respect to the coefficients of the training set
+images to be on the higher side as they are not highly similar to any of the training set images. Wheareas, this minimum error across the training
+set images will be lower for people who had their images in the training set.
+We calculate this error using squared euclidean distance between the coefficient vectors and classify a test image as negative if it's error is
+more than a threshold value. We do a grid search over the hyperparameters "k" and "threshold" and pick the one which gives the best (max) F-1 Score.
+Our choice of the F-1 score metric was due to our aim to balance the tradeoff between precision and recall.
+We used the training set of 32*6 images, and treated the (32*4 + 8*10) remaining images as a validation set (which was used to tune the value of threshold and k)</pre><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Tuning</a></li><li><a href="#2">Plot of F1-score for k=23 (best)</a></li><li><a href="#3">Final hyperparameters</a></li></ul></div><h2 id="1">Tuning</h2><pre class="codeinput">tic;
+ORL_path = <span class="string">"../../../ORL/"</span>;
+[training, test] = get_dataset_ORL(ORL_path);
+negatives = get_neg_dataset_ORL(ORL_path);
+
+<span class="comment">% trainging</span>
+[x_bar, X, V] = eigenfaces_eig(training);
+
+
+best_k = 20;
+best_threshold = 30;
+best_fscore = -inf;
+<span class="keyword">for</span> k=20:30
+    V_hat = V(:, 1:k);
+    alpha = V_hat'*X; <span class="comment">% coefficients of training set data</span>
+
+    X_t = test-x_bar;
+    beta = V_hat'*X_t; <span class="comment">% coefficients of the test set data</span>
+
+    X_neg = negatives-x_bar;
+    gamma = V_hat'*X_neg;
+<span class="comment">%     y = [];</span>
+    <span class="keyword">for</span> threshold = 30:2:70
+        fn=0;
+        <span class="keyword">for</span> i=1:size(test, 2)
+            sq_dist = sum((alpha-beta(:, i)).^2,1);
+            <span class="keyword">if</span> (min(sq_dist)&gt;threshold)
+                fn = fn+1;
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+        tp = size(test, 2)-fn;
+
+        fp=0;
+        <span class="keyword">for</span> i=1:size(negatives, 2)
+            sq_dist = sum((alpha-gamma(:, i)).^2,1);
+            <span class="keyword">if</span> (min(sq_dist)&lt;threshold)
+                fp = fp+1;
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+        p = tp/(tp+fp);
+        r = tp/(tp+fn);
+        fscore = 2*p*r/(p+r);
+        <span class="keyword">if</span> (fscore &gt; best_fscore)
+            best_k = k;
+            best_threshold = threshold;
+            best_fscore = fscore;
+        <span class="keyword">end</span>
+<span class="comment">%         y = [y fscore];</span>
+    <span class="keyword">end</span>
+<span class="comment">%     figure, plot(30:2:70, y)</span>
+<span class="keyword">end</span>
+toc;
+</pre><pre class="codeoutput">Elapsed time is 3.256961 seconds.
+</pre><h2 id="2">Plot of F1-score for k=23 (best)</h2><pre class="codeinput">k = 23;
+V_hat = V(:, 1:k);
+alpha = V_hat'*X; <span class="comment">% coefficients of training set data</span>
+X_t = test-x_bar;
+beta = V_hat'*X_t; <span class="comment">% coefficients of the test set data</span>
+X_neg = negatives-x_bar;
+gamma = V_hat'*X_neg;
+y = [];
+<span class="keyword">for</span> threshold = 30:2:70
+    fn=0;
+    <span class="keyword">for</span> i=1:size(test, 2)
+        sq_dist = sum((alpha-beta(:, i)).^2,1);
+        <span class="keyword">if</span> (min(sq_dist)&gt;threshold)
+            fn = fn+1;
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    tp = size(test, 2)-fn;
+    fp=0;
+    <span class="keyword">for</span> i=1:size(negatives, 2)
+        sq_dist = sum((alpha-gamma(:, i)).^2,1);
+        <span class="keyword">if</span> (min(sq_dist)&lt;threshold)
+            fp = fp+1;
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    p = tp/(tp+fp);
+    r = tp/(tp+fn);
+    fscore = 2*p*r/(p+r);
+    y = [y fscore];
+<span class="keyword">end</span>
+figure, plot(30:2:70, y);
+xlabel(<span class="string">"threshold"</span>);
+ylabel(<span class="string">"F1-score"</span>);
+title(<span class="string">"F1-score vs threshold for k=23"</span>);
+</pre><img vspace="5" hspace="5" src="myMainScript_01.png" alt=""> <h2 id="3">Final hyperparameters</h2><pre class="codeinput">k = best_k;
+threshold = best_threshold;
+
+V_hat = V(:, 1:k);
+alpha = V_hat'*X; <span class="comment">% coefficients of training set data</span>
+
+X_t = test-x_bar;
+beta = V_hat'*X_t; <span class="comment">% coefficients of the test set data</span>
+
+X_neg = negatives-x_bar;
+gamma = V_hat'*X_neg;
+
+fn=0;
+<span class="keyword">for</span> i=1:size(test, 2)
+    sq_dist = sum((alpha-beta(:, i)).^2,1);
+    <span class="keyword">if</span> (min(sq_dist)&gt;threshold)
+        fn = fn+1;
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+fp=0;
+<span class="keyword">for</span> i=1:size(negatives, 2)
+    sq_dist = sum((alpha-gamma(:, i)).^2,1);
+    <span class="keyword">if</span> (min(sq_dist)&lt;threshold)
+        fp = fp+1;
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+fprintf(<span class="string">'Number of false positives is %d\n'</span>, fp);
+fprintf(<span class="string">'Number of false negatives is %d\n'</span>, fn);
+</pre><pre class="codeoutput">Number of false positives is 5
+Number of false negatives is 22
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Strategy for people not in training set
+% 
+%  For people not in the training set, we expect the minimum of the errors of their image coefficients with respect to the coefficients of the training set
+%  images to be on the higher side as they are not highly similar to any of the training set images. Wheareas, this minimum error across the training
+%  set images will be lower for people who had their images in the training set. 
+%  We calculate this error using squared euclidean distance between the coefficient vectors and classify a test image as negative if it's error is 
+%  more than a threshold value. We do a grid search over the hyperparameters "k" and "threshold" and pick the one which gives the best (max) F-1 Score. 
+%  Our choice of the F-1 score metric was due to our aim to balance the tradeoff between precision and recall. 
+%  We used the training set of 32*6 images, and treated the (32*4 + 8*10) remaining images as a validation set (which was used to tune the value of threshold and k)
+%  
+
+
+%% Tuning
+
+tic;
+ORL_path = "../../../ORL/";
+[training, test] = get_dataset_ORL(ORL_path);
+negatives = get_neg_dataset_ORL(ORL_path);
+
+% trainging
+[x_bar, X, V] = eigenfaces_eig(training);
+
+
+best_k = 20;
+best_threshold = 30;
+best_fscore = -inf;
+for k=20:30
+    V_hat = V(:, 1:k);
+    alpha = V_hat'*X; % coefficients of training set data
+
+    X_t = test-x_bar;
+    beta = V_hat'*X_t; % coefficients of the test set data
+
+    X_neg = negatives-x_bar;
+    gamma = V_hat'*X_neg;    
+%     y = [];
+    for threshold = 30:2:70
+        fn=0;
+        for i=1:size(test, 2)
+            sq_dist = sum((alpha-beta(:, i)).^2,1);
+            if (min(sq_dist)>threshold)
+                fn = fn+1;
+            end
+        end
+        tp = size(test, 2)-fn;
+
+        fp=0;
+        for i=1:size(negatives, 2)
+            sq_dist = sum((alpha-gamma(:, i)).^2,1);
+            if (min(sq_dist)<threshold)
+                fp = fp+1;
+            end
+        end
+        p = tp/(tp+fp);
+        r = tp/(tp+fn);
+        fscore = 2*p*r/(p+r);
+        if (fscore > best_fscore)
+            best_k = k;
+            best_threshold = threshold;
+            best_fscore = fscore;            
+        end
+%         y = [y fscore];
+    end
+%     figure, plot(30:2:70, y)
+end
+toc;
+
+%% Plot of F1-score for k=23 (best)
+k = 23;
+V_hat = V(:, 1:k);
+alpha = V_hat'*X; % coefficients of training set data
+X_t = test-x_bar;
+beta = V_hat'*X_t; % coefficients of the test set data
+X_neg = negatives-x_bar;
+gamma = V_hat'*X_neg;
+y = [];
+for threshold = 30:2:70
+    fn=0;
+    for i=1:size(test, 2)
+        sq_dist = sum((alpha-beta(:, i)).^2,1);
+        if (min(sq_dist)>threshold)
+            fn = fn+1;
+        end
+    end
+    tp = size(test, 2)-fn;
+    fp=0;
+    for i=1:size(negatives, 2)
+        sq_dist = sum((alpha-gamma(:, i)).^2,1);
+        if (min(sq_dist)<threshold)
+            fp = fp+1;
+        end
+    end
+    p = tp/(tp+fp);
+    r = tp/(tp+fn);
+    fscore = 2*p*r/(p+r);
+    y = [y fscore];
+end
+figure, plot(30:2:70, y);
+xlabel("threshold");
+ylabel("F1-score");
+title("F1-score vs threshold for k=23");
+%% Final hyperparameters
+
+k = best_k;
+threshold = best_threshold;
+
+V_hat = V(:, 1:k);
+alpha = V_hat'*X; % coefficients of training set data
+
+X_t = test-x_bar;
+beta = V_hat'*X_t; % coefficients of the test set data
+
+X_neg = negatives-x_bar;
+gamma = V_hat'*X_neg;    
+
+fn=0;
+for i=1:size(test, 2)
+    sq_dist = sum((alpha-beta(:, i)).^2,1);
+    if (min(sq_dist)>threshold)
+        fn = fn+1;
+    end
+end
+
+fp=0;
+for i=1:size(negatives, 2)
+    sq_dist = sum((alpha-gamma(:, i)).^2,1);
+    if (min(sq_dist)<threshold)
+        fp = fp+1;
+    end
+end
+
+fprintf('Number of false positives is %d\n', fp);
+fprintf('Number of false negatives is %d\n', fn);
+##### SOURCE END #####
+--></body></html>
