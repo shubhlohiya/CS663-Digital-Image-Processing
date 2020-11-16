@@ -1,0 +1,240 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>myMainScript</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-11-16"><meta name="DC.source" content="myMainScript.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">MyMainScript</a></li><li><a href="#2">Applying the algorithm for Original Images</a></li><li><a href="#3">Applying the same for the Noisy Images</a></li><li><a href="#4">Verifying the results</a></li><li><a href="#5">Analysis of time complexities</a></li><li><a href="#6">Rotation Correction mentioned in the paper</a></li></ul></div><h2 id="1">MyMainScript</h2><pre class="codeinput">tic;
+</pre><h2 id="2">Applying the algorithm for Original Images</h2><pre class="codeinput"><span class="comment">% Image I and J respectively</span>
+I = zeros(300);
+I(50:100, 50:120) = 255;
+J = zeros(300);
+J(120:170, 20:90) = 255;
+
+fig = figure;
+subplot(121); greyscale(I); title(<span class="string">"Image I"</span>);
+subplot(122); greyscale(J); title(<span class="string">"Image J"</span>);
+
+<span class="comment">% Centred fourier transforms</span>
+I1 = fftshift(fft2(I)); I2 = fftshift(fft2(J));
+f = (I1 .* conj(I2))./(abs(I1 .* I2));
+lf = log(abs(f) + 1);
+fig2 = figure(2);
+color(lf,<span class="string">"Logarithm of the Fourier magnitude of the cross-power spectrum"</span>);
+
+<span class="comment">% Inverse fourier transform</span>
+g = ifft2(f);
+fig3 = figure(3);
+greyscale(g/max(g(:))); title(<span class="string">"Shift needed on Image J for Restoration"</span>);
+</pre><img vspace="5" hspace="5" src="myMainScript_01.png" alt=""> <img vspace="5" hspace="5" src="myMainScript_02.png" alt=""> <img vspace="5" hspace="5" src="myMainScript_03.png" alt=""> <h2 id="3">Applying the same for the Noisy Images</h2><pre class="codeinput">I_noisy = I + rand(size(I)) * 20;
+J_noisy = J + rand(size(I)) * 20;
+
+fig4 = figure(4);
+subplot(121); greyscale(I_noisy); title(<span class="string">"Image I (Noisy)"</span>);
+subplot(122); greyscale(J_noisy); title(<span class="string">"Image J (Noisy)"</span>);
+
+f1_noisy = fftshift(fft2(I_noisy)); f2_noisy = fftshift(fft2(J_noisy));
+f_noisy = (f1_noisy .* conj(f2_noisy))./(abs(f1_noisy .* f2_noisy));
+lf_noisy = log(abs(f_noisy) + 1);
+fig5 = figure(5);
+color(lf_noisy,<span class="string">"Logarithm of the Fourier magnitude of the cross-power spectrum"</span>);
+
+g_noisy = ifft2(f_noisy);
+fig6 = figure(6);
+greyscale(g_noisy/max(g_noisy(:))); title(<span class="string">"Shift needed on Image J (Noisy) for Restoration"</span>);
+</pre><img vspace="5" hspace="5" src="myMainScript_04.png" alt=""> <img vspace="5" hspace="5" src="myMainScript_05.png" alt=""> <img vspace="5" hspace="5" src="myMainScript_06.png" alt=""> <h2 id="4">Verifying the results</h2><pre class="codeinput"><span class="comment">%The spike for the Image J restoration plot occurs at (31, 231). This is interpreted as (31, -71) by applying a wrap-around on the image of size 300 * 300 for translation. The initial translation applied was (-30, 70). Hence this new translation will retore Image I from Image J</span>
+<span class="comment">%Similarly, in case of noisy images,we see a spike at (31, 231). This again is interpreted as (31, -71) by applying a wrap-around on the image of size 300 * 300 for etranslation. But since the original images were noisy, the spike is not clear but surrounded by other non-zero frequensies.</span>
+<span class="comment">%The logarith plots of the Fourier magnitudes is a constant of value =log(2) because the result of the cross-power spectrum is a complex number of unit magnitude always.</span>
+</pre><h2 id="5">Analysis of time complexities</h2><pre class="codeinput"><span class="comment">%For an Image of size N * N, this method involves first step, the calculation of Fourier transforms using FFT [time complexity of each being of O(N log(N))] followed by a conjugation [O(N)] &amp; vectorized pointwise multiplication &amp; division [O(1)]. Thus, the overall time complexity is O(N log N).</span>
+<span class="comment">%If we use pixel-wise image comparison for an N * N image, the time complexity of predicting the translation would be O(N^2)");</span>
+</pre><h2 id="6">Rotation Correction mentioned in the paper</h2><pre class="codeinput"><span class="comment">%If f2(x,y) is a rotated version of  f1(x, y) [with a rotation of &#952;o],</span>
+<span class="comment">%doing a Fourier Transform in the cartesian coordinates would yield F2(u, v) = F1(ucos(&#952;o) + vsin(&#952;o), -usin(&#952;o) + vcos(&#952;o)). The magnitudes for both are same. So, we can use the same concept of cross-power spectrum as before by converting the rotation by &#952;o into a translation. In the polar coordinates, the rotation would become a translation. So we convert the images into polar coordinates &amp; take their Fourier Transform.</span>
+<span class="comment">%f2(r, &#952;) = f1(r, &#952;-&#952;o)</span>
+<span class="comment">%F2(m, n) = exp(-2&#960;j(n.&#952;o)) * F1(m, n)</span>
+<span class="comment">%Thus, cross-power spectrum of F1(m, n) &amp; F2(m, n) would yield exp(2&#960;j(n.&#952;o)), using which we can calculate the rotation.</span>
+<span class="comment">%Any translation in x &amp; y would lead to a change in r by ro, such that the</span>
+<span class="comment">%Cross power spectrum would yield exp(2&#960;j(m.ro + n.&#952;o)). Hence, displacement &amp; rotation can be figured out. The exact (x, y) translations can be figured out using the original cross-power spectrum in the cartesian coordinates.</span>
+
+
+toc;
+
+<span class="keyword">function</span>  greyscale(img)
+    myNumOfColors = 200;
+    myColorScale = [[0:1/(myNumOfColors-1):1]', [0:1/(myNumOfColors-1):1]', [0:1/(myNumOfColors-1):1]'];
+    imagesc(img);
+    colormap (myColorScale);
+    colormap <span class="string">gray</span>;
+    daspect ([1 1 1]);
+    colorbar
+<span class="keyword">end</span>
+
+<span class="keyword">function</span>  color(img,t)
+    myNumOfColors = 200;
+    myColorScale = [[0:1/(myNumOfColors-1):1]', [0:1/(myNumOfColors-1):1]', [0:1/(myNumOfColors-1):1]'];
+    imagesc(img); title(t);
+    colormap (myColorScale);
+    colormap <span class="string">jet</span>;
+    daspect ([1 1 1]);
+    colorbar
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">Elapsed time is 10.147759 seconds.
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% MyMainScript
+
+tic;
+
+%% Applying the algorithm for Original Images
+
+% Image I and J respectively
+I = zeros(300);
+I(50:100, 50:120) = 255;
+J = zeros(300);
+J(120:170, 20:90) = 255;
+
+fig = figure;
+subplot(121); greyscale(I); title("Image I");
+subplot(122); greyscale(J); title("Image J");
+
+% Centred fourier transforms
+I1 = fftshift(fft2(I)); I2 = fftshift(fft2(J));
+f = (I1 .* conj(I2))./(abs(I1 .* I2));
+lf = log(abs(f) + 1);
+fig2 = figure(2);
+color(lf,"Logarithm of the Fourier magnitude of the cross-power spectrum");
+
+% Inverse fourier transform
+g = ifft2(f);
+fig3 = figure(3);
+greyscale(g/max(g(:))); title("Shift needed on Image J for Restoration");
+
+
+%% Applying the same for the Noisy Images
+I_noisy = I + rand(size(I)) * 20;
+J_noisy = J + rand(size(I)) * 20;
+
+fig4 = figure(4);
+subplot(121); greyscale(I_noisy); title("Image I (Noisy)");
+subplot(122); greyscale(J_noisy); title("Image J (Noisy)");
+
+f1_noisy = fftshift(fft2(I_noisy)); f2_noisy = fftshift(fft2(J_noisy));
+f_noisy = (f1_noisy .* conj(f2_noisy))./(abs(f1_noisy .* f2_noisy));
+lf_noisy = log(abs(f_noisy) + 1);
+fig5 = figure(5); 
+color(lf_noisy,"Logarithm of the Fourier magnitude of the cross-power spectrum"); 
+
+g_noisy = ifft2(f_noisy);
+fig6 = figure(6);
+greyscale(g_noisy/max(g_noisy(:))); title("Shift needed on Image J (Noisy) for Restoration");
+
+%% Verifying the results
+
+%The spike for the Image J restoration plot occurs at (31, 231). This is interpreted as (31, -71) by applying a wrap-around on the image of size 300 * 300 for translation. The initial translation applied was (-30, 70). Hence this new translation will retore Image I from Image J
+%Similarly, in case of noisy images,we see a spike at (31, 231). This again is interpreted as (31, -71) by applying a wrap-around on the image of size 300 * 300 for etranslation. But since the original images were noisy, the spike is not clear but surrounded by other non-zero frequensies.
+%The logarith plots of the Fourier magnitudes is a constant of value =log(2) because the result of the cross-power spectrum is a complex number of unit magnitude always.
+
+%% Analysis of time complexities
+
+%For an Image of size N * N, this method involves first step, the calculation of Fourier transforms using FFT [time complexity of each being of O(N log(N))] followed by a conjugation [O(N)] & vectorized pointwise multiplication & division [O(1)]. Thus, the overall time complexity is O(N log N).
+%If we use pixel-wise image comparison for an N * N image, the time complexity of predicting the translation would be O(N^2)");
+
+
+%% Rotation Correction mentioned in the paper
+
+
+%If f2(x,y) is a rotated version of  f1(x, y) [with a rotation of θo],
+%doing a Fourier Transform in the cartesian coordinates would yield F2(u, v) = F1(ucos(θo) + vsin(θo), -usin(θo) + vcos(θo)). The magnitudes for both are same. So, we can use the same concept of cross-power spectrum as before by converting the rotation by θo into a translation. In the polar coordinates, the rotation would become a translation. So we convert the images into polar coordinates & take their Fourier Transform.
+%f2(r, θ) = f1(r, θ-θo)
+%F2(m, n) = exp(-2πj(n.θo)) * F1(m, n)
+%Thus, cross-power spectrum of F1(m, n) & F2(m, n) would yield exp(2πj(n.θo)), using which we can calculate the rotation.
+%Any translation in x & y would lead to a change in r by ro, such that the
+%Cross power spectrum would yield exp(2πj(m.ro + n.θo)). Hence, displacement & rotation can be figured out. The exact (x, y) translations can be figured out using the original cross-power spectrum in the cartesian coordinates.
+
+
+toc;
+
+function  greyscale(img)
+    myNumOfColors = 200;
+    myColorScale = [[0:1/(myNumOfColors-1):1]', [0:1/(myNumOfColors-1):1]', [0:1/(myNumOfColors-1):1]'];
+    imagesc(img); 
+    colormap (myColorScale);
+    colormap gray;
+    daspect ([1 1 1]);
+    colorbar
+end
+
+function  color(img,t)
+    myNumOfColors = 200;
+    myColorScale = [[0:1/(myNumOfColors-1):1]', [0:1/(myNumOfColors-1):1]', [0:1/(myNumOfColors-1):1]'];
+    imagesc(img); title(t);
+    colormap (myColorScale);
+    colormap jet;
+    daspect ([1 1 1]);
+    colorbar
+end
+
+##### SOURCE END #####
+--></body></html>
