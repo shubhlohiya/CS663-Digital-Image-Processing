@@ -67,13 +67,15 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Your code here</a></li><li><a href="#3">MyMainScript</a></li></ul></div><pre class="codeinput">tic;
-</pre><h2 id="2">Your code here</h2><pre class="codeinput">k1 = [0 1 0; 1 -4 1 ; 0 1 0];
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Your code here</a></li><li><a href="#4">MyMainScript</a></li></ul></div><pre class="codeinput">tic;
+</pre><h2 id="2">Your code here</h2><pre class="codeinput">N = 201;
+k1 = [0 1 0; 1 -4 1 ; 0 1 0];
 filter_1_N = zeros(N);
 filter_1_N( (N-1)/2:(N+3)/2 , (N-1)/2:(N+3)/2 ) = k1;
 fim_1 = fftshift(fft2(filter_1_N));
 log_mag_filter_1 = log(1+abs(fim_1));
 
+figure;
 subplot(1,2,2);
 daspect([1 1 1]); axis <span class="string">tight</span>;
 imshow(log_mag_filter_1, [min(log_mag_filter_1(:)) max(log_mag_filter_1(:))]);
@@ -81,20 +83,19 @@ colormap(<span class="string">'jet'</span>); colorbar;
 h = gca; h.Visible = <span class="string">'on'</span>;
 title(<span class="string">'Log Magnitude of the Fourier Transform of Kernel 1'</span>)
 
+
 figure;
 s = surf(log_mag_filter_1 ,<span class="string">'FaceAlpha'</span>, 0.5); s.EdgeColor = <span class="string">'none'</span>;
 colormap(<span class="string">'jet'</span>); colorbar;
 h = gca; h.Visible = <span class="string">'on'</span>;
 title(<span class="string">'Surf Image of the Log Magnitude of the Fourier Transform of Kernel 1'</span>);
-
-
-
-k2 = [-1 -1 -1; -1 8 -1 ; -1 -1 -1];
+</pre><img vspace="5" hspace="5" src="myMainScript_01.png" alt=""> <img vspace="5" hspace="5" src="myMainScript_02.png" alt=""> <pre class="codeinput">k2 = [-1 -1 -1; -1 8 -1 ; -1 -1 -1];
 filter_2_N = zeros(N);
 filter_2_N( (N-1)/2:(N+3)/2 , (N-1)/2:(N+3)/2 ) = k2;
 fim_2 = fftshift(fft2(filter_2_N));
 log_mag_filter_2 = log(1+abs(fim_2));
 
+figure;
 subplot(1,2,2);
 daspect([1 1 1]); axis <span class="string">tight</span>;
 imshow(log_mag_filter_2, [min(log_mag_filter_2(:)) max(log_mag_filter_2(:))]);
@@ -107,8 +108,8 @@ s = surf(log_mag_filter_2 ,<span class="string">'FaceAlpha'</span>, 0.5); s.Edge
 colormap(<span class="string">'jet'</span>); colorbar;
 h = gca; h.Visible = <span class="string">'on'</span>;
 title(<span class="string">'Surf Image of the Log Magnitude of the Fourier Transform of Kernel 2'</span>);
-</pre><img vspace="5" hspace="5" src="myMainScript_01.png" alt=""> <img vspace="5" hspace="5" src="myMainScript_02.png" alt=""> <img vspace="5" hspace="5" src="myMainScript_03.png" alt=""> <h2 id="3">MyMainScript</h2><pre class="codeinput">toc;
-</pre><pre class="codeoutput">Elapsed time is 6.247399 seconds.
+</pre><img vspace="5" hspace="5" src="myMainScript_03.png" alt=""> <img vspace="5" hspace="5" src="myMainScript_04.png" alt=""> <h2 id="4">MyMainScript</h2><pre class="codeinput">toc;
+</pre><pre class="codeoutput">Elapsed time is 3.763291 seconds.
 </pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 
@@ -116,12 +117,14 @@ title(<span class="string">'Surf Image of the Log Magnitude of the Fourier Trans
 
 tic;
 %% Your code here
+N = 201;
 k1 = [0 1 0; 1 -4 1 ; 0 1 0];
 filter_1_N = zeros(N);
 filter_1_N( (N-1)/2:(N+3)/2 , (N-1)/2:(N+3)/2 ) = k1;
 fim_1 = fftshift(fft2(filter_1_N));
 log_mag_filter_1 = log(1+abs(fim_1));
 
+figure;
 subplot(1,2,2);
 daspect([1 1 1]); axis tight;
 imshow(log_mag_filter_1, [min(log_mag_filter_1(:)) max(log_mag_filter_1(:))]);  
@@ -129,13 +132,14 @@ colormap('jet'); colorbar;
 h = gca; h.Visible = 'on';
 title('Log Magnitude of the Fourier Transform of Kernel 1')
 
+
 figure;
 s = surf(log_mag_filter_1 ,'FaceAlpha', 0.5); s.EdgeColor = 'none';
 colormap('jet'); colorbar;
 h = gca; h.Visible = 'on';
 title('Surf Image of the Log Magnitude of the Fourier Transform of Kernel 1');
 
-
+%%
 
 k2 = [-1 -1 -1; -1 8 -1 ; -1 -1 -1];
 filter_2_N = zeros(N);
@@ -143,6 +147,7 @@ filter_2_N( (N-1)/2:(N+3)/2 , (N-1)/2:(N+3)/2 ) = k2;
 fim_2 = fftshift(fft2(filter_2_N));
 log_mag_filter_2 = log(1+abs(fim_2));
 
+figure;
 subplot(1,2,2);
 daspect([1 1 1]); axis tight;
 imshow(log_mag_filter_2, [min(log_mag_filter_2(:)) max(log_mag_filter_2(:))]);  
