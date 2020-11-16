@@ -57,14 +57,14 @@ greyscale(g_noisy/max(g_noisy(:))); title("Shift needed on Image J (Noisy) for R
 %If we use pixel-wise image comparison for an N * N image, the time complexity of predicting the translation would be O(N^2)");
 
 
-%% Rotation Correction mentioned in the paper 
-% If f2(x,y) is a rotated version of  f1(x, y) [with a rotation of θo],
-%doing a Fourier Transform in the cartesian coordinates would yield F2(u, v) = F1(ucos(θo) + vsin(θo), -usin(θo) + vcos(θo)). The magnitudes for both are same. So, we can use the same concept of cross-power spectrum as before by converting the rotation by θo into a translation. In the polar coordinates, the rotation would become a translation. So we convert the images into polar coordinates & take their Fourier Transform.
-%f2(r, θ) = f1(r, θ-θo)
-%F2(m, n) = exp(-2πj(n.θo)) * F1(m, n)
-%Thus, cross-power spectrum of F1(m, n) & F2(m, n) would yield exp(2πj(n.θo)), using which we can calculate the rotation.
-%Any translation in x & y would lead to a change in r by ro, such that the
-%Cross power spectrum would yield exp(2πj(m.ro + n.θo)). Hence, displacement & rotation can be figured out. The exact (x, y) translations can be figured out using the original cross-power spectrum in the cartesian coordinates.
+%% Rotation Correction mentioned in the paper
+
+
+%If f2(x,y) is a rotated version of  f1(x, y) [with a rotation of θo], doing a Fourier Transform in the cartesian coordinates would yield F2(u, v) = F1(ucos(θo) + vsin(θo), -usin(θo) + vcos(θo)). The magnitudes for both are same. So, we can use the same concept of cross-power spectrum as before by converting the rotation by θo into a translation. This can be achieved by converting the images into polar coordinates & taking their Fourier Transform:
+%f2(r, θ) = f1(r, θ-θo)");
+%F2(m, n) = exp(-2πj(n.θo)) * F1(m, n)");
+%Thus, cross-power spectrum of F1(m, n) & F2(m, n) would yield exp(2πj(n.θo)), using which we can calculate the rotation.");
+%Any translation in x & y would lead to a change in r by ro, such that the cross power spectrum would yield exp(2πj(m.ro + n.θo)). Hence, displacement & rotation can be figured out. The exact (x, y) translations can be figured out using the original cross-power spectrum in the cartesian coordinates.");
 
 
 toc;
