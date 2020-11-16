@@ -1,0 +1,45 @@
+
+
+
+tic;
+%% Your code here
+k1 = [0 1 0; 1 -4 1 ; 0 1 0];
+B = ones(201, 201); 
+newk1 = zeros(size(B)) ; 
+newk1(100:99+size(k1,1), 100: 99+ size(k1,2)) = k1;
+
+fim1 =fft2(newk1);
+absfim1 = log(abs(fim1)+1);
+imshow(absfim1 , [-1 18]);
+colormap(jet); colorbar; caxis([ 0 2 ]);
+
+k2 = [-1 -1 -1; -1 -8 -1 ; -1 -1 -1];
+filter_2_N = zeros(N);
+filter_2_N( (N-1)/2:(N+3)/2 , (N-1)/2:(N+3)/2 ) = k2;
+fourier_transformed_filter_2 = fftshift(fft2(filter_2_N));
+log_mag_filter_2 = log(1+abs(fourier_transformed_filter_2));
+
+subplot(1,2,2);
+daspect([1 1 1]); axis tight;
+imshow(log_mag_filter_2, [min(log_mag_filter_2(:)) max(log_mag_filter_2(:))]);  
+colormap('jet'); colorbar;
+h = gca; h.Visible = 'on';
+title('Log Magnitude of the Fourier Transform of Kernel 2')
+
+figure;
+s = surf(log_mag_filter_2 ,'FaceAlpha', 0.5); s.EdgeColor = 'none';
+colormap('jet'); colorbar;
+h = gca; h.Visible = 'on';
+title('Surf Image of the Log Magnitude of the Fourier Transform of Kernel 2');
+
+
+
+fim2 =fft2(newk2);
+absfim2 = log(abs(fim2)+1);
+imshow(absfim2 , [-1 18]);
+colormap(jet); colorbar; caxis([ 0 2 ]);
+
+%% MyMainScript
+
+
+toc;
